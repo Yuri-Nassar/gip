@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}MIB - Carteira{% endblock %}
+
+{% block content %}
+<h1>Carteira de Ativos</h1>
+<a href="{% url 'ticker' %}">Novo ticker</a> <br>
+<a href="{% url 'transaction' %}">Registrar compra/venda</a> <br>
+<a href="{% url 'dividend' %}">Registrar rendimento/dividendo</a>
+
+<h2>Ações</h2>
+<ul>
+    {% for item in stocks %}
+    <li>{{ item.asset.name }} ({{ item.asset.ticker }}): Quantidade: {{ item.total_quantity }}, Preço Médio: R$ {{ item.average_price }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Fundos Imobiliários</h2>
+<ul>
+    {% for item in fiis %}
+    <li>{{ item.asset.name }} ({{ item.asset.ticker }}): Quantidade: {{ item.total_quantity }}, Preço Médio: R$ {{ item.average_price }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
