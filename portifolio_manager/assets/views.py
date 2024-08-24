@@ -35,20 +35,24 @@ def portfolio_view(request):
 
     stock_data = []
     for stock in stocks:
-        stock_data.append({
-            'asset': stock.asset,
-            'total_quantity': stock.total_quantity,
-            'average_price': stock.average_price,
-        })
+        if stock.total_quantity > 0:
+            stock_data.append({
+                'asset': stock.asset,
+                'total_quantity': stock.total_quantity,
+                'average_price': stock.average_price,
+                'money_invested': stock.money_invested,
+            })
     
     fiis_data = []
     # for fii in fiis:
     for fii in fiis:
-        fiis_data.append({
-            'asset': fii.asset,
-            'total_quantity': fii.total_quantity,
-            'average_price': fii.average_price,
-        })
+        if fii.total_quantity > 0:
+            fiis_data.append({
+                'asset': fii.asset,
+                'total_quantity': fii.total_quantity,
+                'average_price': fii.average_price,
+                'money_invested': fii.money_invested,
+            })
     
     context = {
         'stocks': stock_data,
@@ -114,10 +118,13 @@ def transaction_create(request):
                                                 (transaction.price * transaction.quantity)
                                                 ) / total_quantity
                     asset_wallet.total_quantity = total_quantity
+                    asset_wallet.money_invested += transaction.price * transaction.quantity
                 elif transaction.action == 'SELL':
                     asset_wallet.total_quantity -= transaction.quantity
+                    asset_wallet.money_invested -= transaction.price * transaction.quantity
                     if asset_wallet.total_quantity == 0:
                         asset_wallet.average_price = 0
+                        asset_wallet.money_invested = 0
 
                 asset_wallet.save()
 
