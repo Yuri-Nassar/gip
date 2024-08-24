@@ -1,24 +1,85 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}<style>
+    /* Estilos personalizados para o dashboard */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+    .section {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .icon {
+        margin-right: 5px;
+    }
+</style>{% endblock %}
+
 {% block title %}MIB - Carteira{% endblock %}
 
 {% block content %}
+
 <h1>Carteira de Ativos</h1>
-<a href="{% url 'ticker' %}">Novo ticker</a> <br>
-<a href="{% url 'transaction' %}">Registrar compra/venda</a> <br>
-<a href="{% url 'dividend' %}">Registrar rendimento/dividendo</a>
+<div class="d-grid gap-2 col-8 mx-auto">
+    <a href="{% url 'ticker' %}" class="btn btn-outline-primary" role="button" ><span class="icon">📈</span>Novo ticker</a>
+    <a href="{% url 'transaction' %}" class="btn btn-outline-primary"><span class="icon">💰</span>Registrar compra/venda</a>
+    <a href="{% url 'dividend' %}" class="btn btn-outline-primary"><span class="icon">💸</span>Registrar rendimento/dividendo</a>
+</div>
 
-<h2>Ações</h2>
-<ul>
-    {% for item in stocks %}
-    <li>{{ item.asset.name }} ({{ item.asset.ticker }}): Quantidade: {{ item.total_quantity }}, Preço Médio: R$ {{ item.average_price }}</li>
-    {% endfor %}
-</ul>
+<div class="section">
+    <h2 class="section-title">Ações</h2>
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th scope="col">Empresa</th>
+                <th scope="col">Ticker</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Preço médio (R$)</th>
+                <th scope="col">Valor investido (R$)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in stocks %}
+                <tr>
+                    <td>{{ item.asset.name }}</td>
+                    <td>{{ item.asset.ticker }}</td>
+                    <td>{{ item.total_quantity }}</td>
+                    <td>{{ item.average_price }}</td>
+                    <td>{{ item.money_invested }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 
-<h2>Fundos Imobiliários</h2>
-<ul>
-    {% for item in fiis %}
-    <li>{{ item.asset.name }} ({{ item.asset.ticker }}): Quantidade: {{ item.total_quantity }}, Preço Médio: R$ {{ item.average_price }}</li>
-    {% endfor %}
-</ul>
+<div class="section">
+    <h2 class="section-title">Fundos Imobiliários</h2>
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th scope="col">Fundo</th>
+                <th scope="col">Ticker</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Preço médio (R$)</th>
+                <th scope="col">Valor investido (R$)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in fiis %}
+                <tr>
+                    <td>{{ item.asset.name }}</td>
+                    <td>{{ item.asset.ticker }}</td>
+                    <td>{{ item.total_quantity }}</td>
+                    <td>{{ item.average_price }}</td>
+                    <td>{{ item.money_invested }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
 {% endblock %}
