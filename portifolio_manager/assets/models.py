@@ -24,6 +24,7 @@ class AssetWallet(models.Model):
 
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
     average_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    money_invested = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_quantity = models.IntegerField(default=0)
     asset_type = models.CharField(max_length=5)#, default='STOCK')
 
