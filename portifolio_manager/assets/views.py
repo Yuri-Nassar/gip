@@ -121,7 +121,7 @@ def transaction_create(request):
                     asset_wallet.money_invested += transaction.price * transaction.quantity
                 elif transaction.action == 'SELL':
                     asset_wallet.total_quantity -= transaction.quantity
-                    asset_wallet.money_invested -= transaction.price * transaction.quantity
+                    asset_wallet.money_invested = asset_wallet.average_price * asset_wallet.total_quantity
                     if asset_wallet.total_quantity == 0:
                         asset_wallet.average_price = 0
                         asset_wallet.money_invested = 0
