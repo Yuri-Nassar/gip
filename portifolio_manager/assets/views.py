@@ -163,7 +163,6 @@ def load_dividends(request):
                 
         dividend_data = {}
         for dividend in dividends:
-            print(dividend.ticker_type, dividend.ticker_code, dividend.date)
             # _date = str(dividend.date.month)+"/"+str(dividend.date.year)
             _date = dividend.date.strftime('%m/%Y')
             try:
@@ -181,7 +180,7 @@ def load_dividends(request):
             'dividend_data': dividend_data,
             'plot_dividens': plot_dividens
         }
-        print(dividend_data)
+
         return render(request, 'assets/dividends_list.html', context)
 
 def create_plot_dividends(df):
