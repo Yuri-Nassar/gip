@@ -6,10 +6,38 @@ class AssetForm(forms.ModelForm):
         model = Asset
         fields = ['name', 'ticker', 'asset_type']
 
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'ticker': forms.TextInput(attrs={'class': 'form-control'}),
+            'asset_type': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+        labels = {
+            'name': 'Nome da Empresa',
+            'ticker': 'Ticker do Ativo',
+            'asset_type': 'Tipo de Ativo',
+        }        
+
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ['asset', 'action', 'quantity', 'price', 'date']
+
+        widgets = {
+            'asset': forms.Select(attrs={'class': 'form-control'}),
+            'action': forms.Select(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+        labels = {
+            'asset': 'Código do Ticker',
+            'action': 'Movimento',
+            'quantity': 'Quantidade',
+            'price': 'Valor R$',
+            'date': 'Data',
+        }
 
 class DividendForm(forms.ModelForm):
     class Meta:
