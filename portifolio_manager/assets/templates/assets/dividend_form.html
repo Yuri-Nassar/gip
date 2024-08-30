@@ -1,16 +1,49 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}MIB - Rendimento{% endblock %}
+{% block title %}Rendimento{% endblock %}
 
 {% block content %}
-    <h1>Registrar Rendimento</h1>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div id="forms_position" class="col-md-4">
+                <h3 class="text-center">Registrar Rendimento</h3>
                 <form method="post" class="form">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    <div class="form-group row align-items-center">
+                        <label for="id_ticker_type" class="col col-form-label">{{ form.ticker_type.label }}</label>
+                        <div class="col">   
+                            {{ form.ticker_type }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label for="id_ticker_code" class="col col-form-label">{{ form.ticker_code.label }}</label>
+                        <div class="col">
+                            {{ form.ticker_code }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label for="id_rendimento_type" class="col col-form-label">{{ form.rendimento_type.label }}</label>
+                        <div class="col">
+                            {{ form.rendimento_type }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label for="id_money" class="col col-form-label">{{ form.money.label }}</label>
+                        <div class="col">
+                            {{ form.money }}
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label for="id_date" class="col col-form-label">{{ form.date.label }}</label>
+                        <div class="col">
+                            {{ form.date }}
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </form>
             </div>

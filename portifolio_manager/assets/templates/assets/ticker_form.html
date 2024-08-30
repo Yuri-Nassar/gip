@@ -1,12 +1,40 @@
 {% extends 'base.html' %}
 
-{% block title %}MIB - Ticker{% endblock %}
+{% block title %}Ticker{% endblock %}
 
 {% block content %}
-    <h1>Registrar ticker</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div id="forms_position" class="col-md-4">
+            <h3 class="text-center">Registrar ticker</h3>
+            <form method="post" class="form">
+                {% csrf_token %}
+                <!-- {{ form.as_p }} -->
+                <div class="form-group align-items-center">
+                    <label for="id_ticker_type" class="col col-form-label">{{ form.name.label }}</label>
+                    <div class="col">   
+                        {{ form.name }}
+                    </div>
+                </div>
+
+                <div class="form-group align-items-center">
+                    <label for="id_ticker_type" class="col col-form-label">{{ form.ticker.label }}</label>
+                    <div class="col">   
+                        {{ form.ticker }}
+                    </div>
+                </div>
+
+                <div class="form-group align-items-center">
+                    <label for="id_ticker_type" class="col col-form-label">{{ form.asset_type.label }}</label>
+                    <div class="col">   
+                        {{ form.asset_type }}
+                    </div>
+                </div>
+                <div  style="margin-top: 5px;" class="form-group">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
