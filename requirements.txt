@@ -1,0 +1,6 @@
+Django==5.1
+pandas==2.2.2
+pip==24.2
+plotly==5.24.0
+setuptools==72.1.0
+wheel==0.43.0
