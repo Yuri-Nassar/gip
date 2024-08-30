@@ -6,7 +6,7 @@ class Asset(models.Model):
         ('FII', 'Fundo Imobiliário'),
     )
     name = models.CharField(max_length=100)
-    ticker = models.CharField(max_length=10, unique=True)
+    ticker = models.CharField(max_length=6, unique=True)
     asset_type = models.CharField(max_length=5, choices=TYPE_CHOICES)
 
     class Meta:
@@ -52,12 +52,19 @@ class Transaction(models.Model):
         return f"{self.get_action_display()} - {self.asset.ticker} - {self.quantity} @ {self.price}"
 
 class Dividend(models.Model):
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    rendimento_choices = [
+        ('dividendo', 'Dividendo'),
+        ('jscp', 'JSCP'),
+        ('rendimento', 'Rendimento'),
+    ]
+    ticker_type = models.CharField(max_length=5, choices=Asset.TYPE_CHOICES)
+    rendimento_type = models.CharField(max_length=10, choices=rendimento_choices)
+    ticker_code = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    money = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
 
     class Meta:
         app_label = 'assets'
 
     def __str__(self):
-        return f"Rendimento - {self.asset.ticker} - {self.amount}"
+        return f"{self.ticker_code} | {self.ticker_type} | {self.rendimento_type} | {self.money} | {self.date}"

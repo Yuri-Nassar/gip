@@ -1,7 +1,13 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.utils import timezone
 from .models import Asset, AssetWallet, Transaction, Dividend
 from .forms import AssetForm, TransactionForm, DividendForm
+
+import pandas as pd
 from datetime import datetime
+from collections import defaultdict
+import plotly.graph_objects as go
 
 def is_ticker_name_valid(ticker_name, type_asset):
     if type_asset == 'FII':
@@ -142,3 +148,83 @@ def dividend_create(request):
     else:
         form = DividendForm()
     return render(request, 'assets/dividend_form.html', {'form': form})
+
+def load_tickers(request):
+    ticker_type = request.GET.get('ticker_type')
+    tickers = Asset.objects.filter(asset_type=ticker_type).all()
+    return JsonResponse(list(tickers.values('id','ticker')), safe=False)
+
+def load_dividends(request):
+        dividends = Dividend.objects.all()
+
+        _dividendos_df = pd.DataFrame(dividends.values())
+        plot_dividens = create_plot_dividends(_dividendos_df[['date','ticker_type','money']])
+        # print(_dividendos_df)
+                
+        dividend_data = {}
+        for dividend in dividends:
+            print(dividend.ticker_type, dividend.ticker_code, dividend.date)
+            # _date = str(dividend.date.month)+"/"+str(dividend.date.year)
+            _date = dividend.date.strftime('%m/%Y')
+            try:
+                dividend_data[dividend.ticker_type][dividend.ticker_code][_date] += dividend.money
+            except:
+                if dividend.ticker_type not in dividend_data:
+                    dividend_data[dividend.ticker_type] = {}
+                    dividend_data[dividend.ticker_type][dividend.ticker_code] = {_date:0}
+                    dividend_data[dividend.ticker_type][dividend.ticker_code][_date] += dividend.money
+                elif dividend.ticker_code not in dividend_data[dividend.ticker_type]:
+                    dividend_data[dividend.ticker_type][dividend.ticker_code] = {_date:dividend.money}
+                    
+
+        context = {
+            'dividend_data': dividend_data,
+            'plot_dividens': plot_dividens
+        }
+        print(dividend_data)
+        return render(request, 'assets/dividends_list.html', context)
+
+def create_plot_dividends(df):
+    df = df.sort_values(by=['ticker_type', 'date'], ascending=[False, True])
+    df['date'] = pd.to_datetime(df['date'])
+    df['month_year'] = df['date'].dt.to_period('M').astype(str)
+    df['ticker_type'] = df['ticker_type'].map({'STOCK':'Ações', 'FII':'FII', 3:'ETF', 4:'ETF Cotas'})
+    df = df.drop(columns=['date'])
+
+    # Agrupando os dados por mês/ano e tipo de ativo
+    grouped = df.groupby(['month_year', 'ticker_type']).sum()\
+                .unstack().fillna(0)
+
+    # Criando o gráfico de barras empilhadas
+    fig = go.Figure()
+
+    for ticker_type in grouped['money'].columns.sort_values(ascending=False):
+        fig.add_trace(go.Bar(
+            x=grouped.index.astype(str),
+            y=grouped['money'][ticker_type],
+            name=ticker_type
+        ))
+
+    fig.update_layout(width=1000, height=300,
+        plot_bgcolor='white',
+        barmode='stack',
+        title='Dividendos por Mês e Tipo de Ativo',
+        # xaxis_title='Data (Mês/Ano)',
+        yaxis_title='Valor (R$)',
+        legend_title='Tipo de Ativo',
+        margin=dict(l=0, r=0, t=30, b=0), # Remove margens
+        legend=dict(
+            orientation="h",  # Orientação horizontal
+            yanchor="bottom",
+            y=1.02,
+            xanchor="center",
+            x=0.5
+        )
+    )
+
+    # Configurando o gráfico para ser responsivo
+    config = {'responsive': True}
+
+    # Convertendo o gráfico para HTML
+    graph_div = fig.to_html(full_html=False, config=config)
+    return graph_div
