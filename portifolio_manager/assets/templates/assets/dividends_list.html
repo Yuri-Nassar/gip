@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}MIB - Lista de Rendimentos{% endblock %}
+
+{% block content %}
+<h1>Dividendos Recebidos</h1>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="graph-container mt-4">
+                <div id="graph_div" class="graph">
+                    {{ plot_dividens|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            {% for ticker_type, tickers in dividend_data.items %}
+                <h2>{% if ticker_type == 'FII' %}Fundos Imobiliários{% else %}Ações{% endif %}</h2>
+                {% for ticker_code, dividends in tickers.items %}
+                    <h3>{{ ticker_code }}</h3>
+                    <ul>
+                        {% for date, money in dividends.items %}
+                            <li>{{ date }}: R$ {{ money }}</li>
+                            <!-- <li>{{ date }}: {{ dividends.money }}</li> -->
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
