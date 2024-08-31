@@ -1,11 +1,19 @@
-# MIB - Meu Investimento no Brasil
+# GIP - Gerenciador de Investimentos Pessoal
 
 Aplicação para controle de investimentos em ações e fiis.
 
-## Pontos principais
+## Recursos atuais
 
-* Cadastro de ativos financeiros (ações e renda fixa)
-* Controle de compras e vendas
-* Calculo de ganhos e perdas
-* Calculo de impostos
-* Relatórios de evolução dos investimentos
+* Carteira
+** Cadastro de ativos financeiros (ações, fundos imobiliários)
+** Registro de compra e venda
+** Visualização dos ativos
+* Rendimentos
+** Registro de rendimentos  (dividendos, jscp, rendimentos)
+** Visualização dos rendimentos
+
+# Recursos em planejamento
+
+* Visualização do resumo geral dos investimentos
+* Controle para o IRPF
+* Inclusão de outros tipos de ativos (BDRs, ETFs, etc)
