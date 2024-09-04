@@ -7,7 +7,7 @@ Aplicação para controle de investimentos em ações e fiis.
 * Carteira
     + Cadastro de ativos financeiros (ações, fundos imobiliários)
     + Registro de compra e venda
-    + Visualização dos ativos
+    + Visualização das posições
 * Rendimentos
     + Registro de rendimentos  (dividendos, jscp, rendimentos)
     + Visualização dos rendimentos
