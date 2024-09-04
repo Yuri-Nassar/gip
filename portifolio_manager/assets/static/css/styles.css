@@ -11,7 +11,7 @@ body {font-family: Arial, sans-serif;
 
 .section {background-color: #fff;border: 1px solid #ddd;margin-top: 20px;margin-bottom: 20px;padding: 10px;border-radius: 5px;}
 
-.icon {margin-right: 5px;}
+.icon {padding: 5px;}
 
 .graph-container {
     display: flex;

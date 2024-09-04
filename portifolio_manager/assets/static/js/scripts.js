@@ -20,6 +20,6 @@ $(document).ready(function() {
     });
 });
 
-window.addEventListener('resize', function() {
-    Plotly.Plots.resize(document.getElementById('graph_div'));
-});
+// window.addEventListener('resize', function() {
+//     Plotly.Plots.resize(document.getElementById('graph_div'));
+// });
