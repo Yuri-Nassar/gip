@@ -1,22 +1,27 @@
 from django import forms
 from .models import Asset, Transaction, Dividend
 
-class AssetForm(forms.ModelForm):
+class AssetForm(forms.ModelForm):    
     class Meta:
         model = Asset
-        fields = ['name', 'ticker', 'asset_type']
+        fields = ['name', 'ticker', 'cnpj', 'asset_type']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'ticker': forms.TextInput(attrs={'class': 'form-control'}),
+            'cnpj': forms.TextInput(attrs={'class': 'form-control',
+                                           'placeholder': '00.000.000/0000-00',
+                                           'required': False}),
             'asset_type': forms.Select(attrs={'class': 'form-control'}),
         }
+        
 
         labels = {
             'name': 'Nome da Empresa',
             'ticker': 'Ticker do Ativo',
+            'cnpj': 'CNPJ',
             'asset_type': 'Tipo de Ativo',
-        }        
+        }
 
 class TransactionForm(forms.ModelForm):
     class Meta:

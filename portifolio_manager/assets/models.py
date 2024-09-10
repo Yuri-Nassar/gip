@@ -1,32 +1,28 @@
 from django.db import models
 
+TICKER_TYPE_CHOICES = (
+    ('STOCK', 'Ação'),
+    ('FII', 'Fundo Imobiliário'),
+)
+
 class Asset(models.Model):
-    TYPE_CHOICES = (
-        ('STOCK', 'Ação'),
-        ('FII', 'Fundo Imobiliário'),
-    )
     name = models.CharField(max_length=100)
     ticker = models.CharField(max_length=6, unique=True)
-    asset_type = models.CharField(max_length=5, choices=TYPE_CHOICES)
+    cnpj   = models.CharField(max_length=18, blank=True)
+    asset_type = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
 
     class Meta:
         app_label = 'assets'
 
     def __str__(self):
-        return f"{self.ticker}"
+        return f"{self.ticker} | {self.asset_type}"
     
 class AssetWallet(models.Model):
-    TYPE_CHOICES = (
-        ('STOCK', 'Ação'),
-        ('FII', 'Fundo Imobiliário'),
-    )
-    # asset_type = models.CharField(max_length=5, choices=TYPE_CHOICES, default='STOCK')
-
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    asset = models.CharField(max_length=6, unique=True)
     average_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     money_invested = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_quantity = models.IntegerField(default=0)
-    asset_type = models.CharField(max_length=5)#, default='STOCK')
+    asset_type = models.CharField(max_length=5)
 
     class Meta:
         app_label = 'assets'
@@ -39,7 +35,9 @@ class Transaction(models.Model):
         ('BUY', 'Compra'),
         ('SELL', 'Venda'),
     )
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    
+    asset = models.CharField(max_length=6)
+    ticker_type = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
     action = models.CharField(max_length=4, choices=ACTION_CHOICES)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -49,7 +47,7 @@ class Transaction(models.Model):
             app_label = 'assets'
 
     def __str__(self):
-        return f"{self.get_action_display()} - {self.asset.ticker} - {self.quantity} @ {self.price}"
+        return f"{self.ticker_type} | {self.quantity} | {self.price}"
 
 class Dividend(models.Model):
     rendimento_choices = [
@@ -57,9 +55,10 @@ class Dividend(models.Model):
         ('jscp', 'JSCP'),
         ('rendimento', 'Rendimento'),
     ]
-    ticker_type = models.CharField(max_length=5, choices=Asset.TYPE_CHOICES)
+    
+    ticker_type = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
     rendimento_type = models.CharField(max_length=10, choices=rendimento_choices)
-    ticker_code = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    ticker_code = models.CharField(max_length=6)
     money = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
 
