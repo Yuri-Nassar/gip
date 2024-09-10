@@ -6,9 +6,9 @@
 <div class="container">
     <div class="row justify-content-center">
         <div id="forms_position" class="col-md-4">
-            <h3 class="text-center">Registrar ticker</h3>
-            {% include 'base_modal_msg.html' %}
-            <form id="ticker_form_new" method="post" class="form">
+            <h3 class="text-center">Atualizar ticker</h3>
+            {% include 'base_modal_msg.html' %}     
+            <form id= "ticker_form_update" method="post" class="form">
                 {% csrf_token %}
                 {% if form.non_field_errors %}
                     <div class="alert alert-danger">
@@ -51,11 +51,13 @@
                         {{ form.asset_type }}
                     </div>
                 </div>
-                <div  style="margin-top: 5px;" class="form-group">
+                <div style="margin-top: 5px;" class="form-group">
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
 {% endblock %}

@@ -46,8 +46,8 @@
                             Empresas<span class="icon fa-regular fa-building"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'ticker' %}">Cadastro<span class="bi bi-building-add"></span></a></li>
-                                <li><a class="dropdown-item disabled" href="#">Editar<span class="icon bi bi-pencil-square"></span></a></li>
+                                <li><a class="dropdown-item" href="{% url 'ticker_new' %}">Cadastro<span class="bi bi-building-add"></span></a></li>
+                                <li><a class="dropdown-item" href="{% url 'ticker_list' %}">Editar<span class="icon bi bi-pencil-square"></span></a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -69,18 +69,6 @@
         </nav>
     </div>
 
-    <!-- <div class="container">
-        <div class="row text-center">
-            <div class="d-flex justify-content-center gap-2">
-                <a href="{% url 'portfolio' %}" class="btn btn-outline-primary w-auto" role="button" ><span class="icon bi-wallet2"></span>Carteira</a>
-                <a href="{% url 'ticker' %}" class="btn btn-outline-primary w-auto" role="button" ><span class="icon bi-building-add"></span>Novo ticker</a>
-                <a href="{% url 'transaction' %}" class="btn btn-outline-primary"><span class="icon bi-arrow-down-up"></span>Registrar compra/venda</a>
-                <a href="{% url 'dividend' %}" class="btn btn-outline-primary"><span class="icon bi-cash-coin"></span>Registrar rendimento/dividendo</a>
-                <a href="{% url 'dividend_list' %}" class="btn btn-outline-primary"><span class="icon bi-piggy-bank"></span>Lista de Rendimentos</a>
-            </div>
-        </div>
-    </div> -->
-
     <!-- Conteúdo da página -->
     <div class="container content">
         {% block content %}{% endblock %}
@@ -98,10 +86,28 @@
     <script>var ajaxUrl = "{% url 'ajax_load_tickers' %}";</script>
     <script src="{% static 'js/scripts.js' %}"></script>
     <script>
-        window.addEventListener('resize', function() {
-            Plotly.Plots.resize(document.getElementById('graph'));
+        $(document).ready(function() {
+            window.addEventListener('resize', function() {
+                Plotly.Plots.resize(document.getElementById('graph'));
+            });
         });
+
+        // $(document).ready(function() {
+        //     {% if messages %}
+        //         $('#successModal').modal('show');
+        //     {% endif %}
+        // });
+
+        // $(document).ready(function() {
+        //     $('#id_cnpj').on('load', function() { // here is the change
+        //         // if (this.value != "") {
+        //         this.removeAttribute("required");
+        //         this.required = false;
+        //         // }
+        //     });
+        // });
     </script>
+    
 
     <footer id="" class="footer">
         <div class="bg-dark py-3">

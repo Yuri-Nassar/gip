@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Tickers Cadastrados{% endblock %}
+
+{% block content %} 
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="table-responsive col-md-8">
+            <h3 class="text-center">Lista de Ativos</h3>
+            <table class="table table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CNPJ</th>
+                        <th>Ticker</th>
+                        <th>Tipo de Ativo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asset in assets %}
+                        <tr>
+                            <td>{{ asset.name }}</td>
+                            <td>{{ asset.cnpj }}</td>
+                            <td>{{ asset.ticker }}</td>
+                            <td>{% if asset.asset_type == "STOCK" %} 
+                                    Ação
+                                {% else %}
+                                    Fundo Imobiliário
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'ticker_update' asset.pk %}" class="btn btn-outline-primary">Editar</a>
+                                <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ asset.id }}">
+                                    Deletar
+                                </button>
+
+                                {% include 'base_modal_msg_ask_del.html' %}
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% include 'base_modal_msg_del.html' %}
+
+</div>
+
+{% endblock %}
