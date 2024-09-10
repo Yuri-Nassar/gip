@@ -1,33 +1,39 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import JsonResponse
 from django.utils import timezone
+from django.contrib import messages
 from .models import Asset, AssetWallet, Transaction, Dividend
 from .forms import AssetForm, TransactionForm, DividendForm
 
 import pandas as pd
-from datetime import datetime
+import time
 from collections import defaultdict
 import plotly.graph_objects as go
 
-def is_ticker_name_valid(ticker_name, type_asset):
-    if type_asset == 'FII':
-        if len(ticker_name) != 6:
-            return False
-        if (len(ticker_name) != 6) & (ticker_name != ticker_name.upper()):
-            return False
-        if ticker_name[-2:] != '11':
-            return False
-
-        return True
+def is_ticker_name_valid(ticker, type_ticker):
+    t_name = ticker[:4]
+    t_code = ticker[4:]
+    t_length = len(ticker)
+    
+    if type_ticker == 'FII':
+        if t_length != 6:
+            return False, "Verifique se o ticker do ativo possui 6 caracteres."
+        if t_name != t_name.upper():
+            return False, "Verifique se o ticker possui apenas letras maiúsculas."
+        if t_code[-2:] != '11':
+            return False, "Verifique se o código está correto."
+    elif type_ticker == 'STOCK':
+        if t_length not in [5,6]:
+            return False, "Verifique se o ticker do ativo possui 5 ou 6 caracteres."
+        if t_name != t_name.upper():
+            return False, "Verifique se o ticker possui apenas letras maiúsculas."
+        if t_code not in ['3','4','11']:
+            return False, "Verifique se o código está correto."
     else:
-        if len(ticker_name) not in [5,6]:
-            return False
-        if (len(ticker_name) not in [5,6]) & (ticker_name != ticker_name.upper()):
-            return False
-        if (ticker_name[-1:] != '3') & (ticker_name[-2:] != '11'):
-            return False
+        print(f"Tipo de ativo inválido: {type_ticker}")
+        return False, "Tipo de ativo inválido."
 
-        return True
+    return True, "Válido"
 
 
 def portfolio_view(request):
@@ -73,15 +79,53 @@ def asset_create(request):
             ticker = form.cleaned_data.get('ticker')
             asset_type = form.cleaned_data.get('asset_type')
 
-            print(f"Criando ativo -> ticker: {ticker}, asset_type: {asset_type}")
-            if not is_ticker_name_valid(ticker, asset_type):
-                form.add_error('ticker', 'Formato inválido. Ex.: ADBE3, ADBE4 e ADBE11.')
+            bool_check , msg = is_ticker_name_valid(ticker, asset_type)
+            if not bool_check:
+                form.add_error('ticker', msg)
+                return render(request, 'assets/ticker_form.html', {'form': form})
             else:
                 form.save()
-                return redirect('portfolio')
+                # messages.add_message(request, messages.SUCCESS, 'Ativo criado com sucesso!')
+                print(f"Criando ativo -> ticker: {ticker}, asset_type: {asset_type}")
+                messages.add_message(request, messages.SUCCESS, 'Ativo criado com sucesso!')
+        else:
+            errors = form.errors
+            print(f"Erros validação: {errors}")
+            
     else:
         form = AssetForm()
     return render(request, 'assets/ticker_form.html', {'form': form})
+
+def asset_list(request):
+    assets = Asset.objects.all()
+    return render(request, 'assets/ticker_list.html', {'assets': assets})
+
+def asset_update(request, pk):
+    asset = get_object_or_404(Asset, pk=pk)
+    if request.method == 'POST':
+        form = AssetForm(request.POST, instance=asset)
+        if form.is_valid():
+            
+            form.save()
+            # messages.success(request, 'Ativo atualizado com sucesso!')
+            print("Ativo atualizado!")
+            messages.add_message(request, messages.SUCCESS, 'Ativo atualizado com sucesso!')
+
+    else:
+        form = AssetForm(instance=asset)
+    return render(request, 'assets/ticker_update.html', {'form': form})#, 'messages': messages.get_messages(request)})
+
+def asset_delete(request, pk):
+    asset = get_object_or_404(Asset, pk=pk)
+    if request.method == 'POST':
+        asset.delete()
+        print(f"Deletando ativo -> ticker: {asset.ticker}, asset_type: {asset.asset_type}")
+        messages.add_message(request, messages.SUCCESS, f'O ativo {asset.name} foi deletado com sucesso.')
+    else:
+        print('Ação não permitida.')
+        messages.error(request, 'Ação não permitida.')
+
+    return asset_list(request)
 
 def transaction_create(request):
     if request.method == 'POST':
