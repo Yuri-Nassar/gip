@@ -1,4 +1,6 @@
-# GIP - Gerenciador de Investimentos Pessoal
+<h3 align="center">Gerenciador de Investimentos Pessoal (GIP)</h3>
+<div align="center">
+</div>
 
 Aplicação para controle de investimentos em ações e fiis.
 
@@ -19,3 +21,20 @@ Aplicação para controle de investimentos em ações e fiis.
     + Evolução patrimonial
 * Controle para o IRPF
 * Inclusão de outros tipos de ativos (BDRs, ETFs, etc)
+
+# Como usar
+A step by step series of examples that tell you how to get a development env running.
+
+Say what the step will be
+
+```
+Give the example
+```
+
+And repeat
+
+```
+until finished
+```
+
+End with an example of getting some data out of the system or using it for a little demo.
