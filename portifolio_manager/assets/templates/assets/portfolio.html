@@ -23,8 +23,8 @@
             <tbody>
             {% for item in stocks %}
                 <tr>
-                    <td>{{ item.asset.name }}</td>
-                    <td>{{ item.asset.ticker }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.ticker }}</td>
                     <td>{{ item.total_quantity }}</td>
                     <td>{{ item.average_price }}</td>
                     <td>{{ item.money_invested }}</td>
@@ -49,8 +49,8 @@
             <tbody>
             {% for item in fiis %}
                 <tr>
-                    <td>{{ item.asset.name }}</td>
-                    <td>{{ item.asset.ticker }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.ticker }}</td>
                     <td>{{ item.total_quantity }}</td>
                     <td>{{ item.average_price }}</td>
                     <td>{{ item.money_invested }}</td>

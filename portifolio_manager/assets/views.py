@@ -6,6 +6,7 @@ from .models import Asset, AssetWallet, Transaction, Dividend
 from .forms import AssetForm, TransactionForm, DividendForm
 
 import pandas as pd
+from datetime import datetime
 import time
 from collections import defaultdict
 import plotly.graph_objects as go
@@ -35,41 +36,34 @@ def is_ticker_name_valid(ticker, type_ticker):
 
     return True, "Válido"
 
-
 def portfolio_view(request):
-    # stocks = Asset.objects.filter(asset_type='STOCK')
-    stocks = AssetWallet.objects.filter(asset_type='STOCK')
-    # fiis = Asset.objects.filter(asset_type='FII')
-    fiis = AssetWallet.objects.filter(asset_type='FII')
-    
-    # print(f'AssetWallet-A: {stocks}')
-    # print(f'AssetWallet-F: {fiis}')
+    # s_asset = Asset.objects.filter(asset_type='STOCK')
+    assets = Asset.objects.all()
+    tickers = {}
+    for ticker in assets:
+        tickers[ticker.ticker] = {'id': ticker.id, 'name': ticker.name, 'type': ticker.asset_type}
 
-    stock_data = []
-    for stock in stocks:
-        if stock.total_quantity > 0:
-            stock_data.append({
-                'asset': stock.asset,
-                'total_quantity': stock.total_quantity,
-                'average_price': stock.average_price,
-                'money_invested': stock.money_invested,
-            })
+    assets = AssetWallet.objects.all()
+    stock_data, fiis_data = [], []
     
-    fiis_data = []
-    # for fii in fiis:
-    for fii in fiis:
-        if fii.total_quantity > 0:
-            fiis_data.append({
-                'asset': fii.asset,
-                'total_quantity': fii.total_quantity,
-                'average_price': fii.average_price,
-                'money_invested': fii.money_invested,
-            })
+    for asset in assets:
+        data = {'name': tickers[asset.ticker_code]['name'],
+                'ticker': asset.ticker_code,
+                'total_quantity': asset.total_quantity,
+                'average_price': asset.average_price,
+                'money_invested': asset.money_invested
+                }
+
+        if asset.asset_type == 'STOCK':
+            stock_data.append(data)
+        else:
+            fiis_data.append(data)
     
     context = {
         'stocks': stock_data,
         'fiis': fiis_data,
     }
+
     return render(request, 'assets/portfolio.html', context)
 
 def asset_create(request):
@@ -129,26 +123,28 @@ def asset_delete(request, pk):
 
 def transaction_create(request):
     if request.method == 'POST':
-        _asset = request.POST.get('asset')
+        _asset = request.POST.get('ticker_code')
         _action = request.POST.get('action')
         _date = request.POST.get('date')
         _quantity = request.POST.get('quantity')
 
         print(f"_asset: {_asset}, _action: {_action}, _date: {_date}, _quantity: {_quantity}")
 
-        obj = Asset.objects.get(id=_asset)
+        # obj = Asset.objects.get(id=_asset)
+        obj = Asset.objects.get(ticker=_asset)
         print(f"obj: {obj}")
+        print(f"obj.asset_type: {obj.asset_type}, obj.ticker: {obj.ticker}")
 
         form = TransactionForm(request.POST)
         if form.is_valid():
             # Update AssetWallet
             asset_wallet, created = AssetWallet.objects.get_or_create(
-                asset=obj, asset_type=obj.asset_type
+                ticker_code=obj.ticker, asset_type=obj.asset_type
             )
             
             # asset_wallet, created = AssetWallet.objects.get(asset=_asset)
             print(f"created: {created}")
-            print(f"asset_wallet.asset: {asset_wallet.asset}, asset_wallet.asset_type: {asset_wallet.asset_type}, asset_wallet.total_quantity: {asset_wallet.total_quantity}")
+            print(f"asset_wallet.asset: {asset_wallet.ticker_code}, asset_wallet.asset_type: {asset_wallet.asset_type}, asset_wallet.total_quantity: {asset_wallet.total_quantity}")
 
             try:
                 d = datetime.strptime(_date, '%Y-%m-%d')
@@ -165,8 +161,8 @@ def transaction_create(request):
                 if transaction.action == 'BUY':
                     total_quantity = asset_wallet.total_quantity + transaction.quantity
                     asset_wallet.average_price = ((asset_wallet.average_price * asset_wallet.total_quantity) + 
-                                                (transaction.price * transaction.quantity)
-                                                ) / total_quantity
+                                                  (transaction.price * transaction.quantity)
+                                                 ) / total_quantity
                     asset_wallet.total_quantity = total_quantity
                     asset_wallet.money_invested += transaction.price * transaction.quantity
                 elif transaction.action == 'SELL':

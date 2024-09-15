@@ -15,11 +15,11 @@ class Asset(models.Model):
         app_label = 'assets'
 
     def __str__(self):
-        return f"{self.ticker} | {self.asset_type}"
+        return f"{self.ticker}"
     
 class AssetWallet(models.Model):
-    asset = models.CharField(max_length=6, unique=True)
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    ticker_code    = models.CharField(max_length=6, unique=True)
+    average_price  = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     money_invested = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_quantity = models.IntegerField(default=0)
     asset_type = models.CharField(max_length=5)
@@ -28,7 +28,7 @@ class AssetWallet(models.Model):
         app_label = 'assets'
     
     def __str__(self):
-        return f"ticker:{self.asset}"
+        return f"{self.ticker_code}"
 
 class Transaction(models.Model):
     ACTION_CHOICES = (
@@ -36,8 +36,8 @@ class Transaction(models.Model):
         ('SELL', 'Venda'),
     )
     
-    asset = models.CharField(max_length=6)
     ticker_type = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
+    ticker_code = models.CharField(max_length=6)
     action = models.CharField(max_length=4, choices=ACTION_CHOICES)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -47,7 +47,7 @@ class Transaction(models.Model):
             app_label = 'assets'
 
     def __str__(self):
-        return f"{self.ticker_type} | {self.quantity} | {self.price}"
+        return f"{self.ticker_code}"
 
 class Dividend(models.Model):
     rendimento_choices = [
@@ -66,4 +66,4 @@ class Dividend(models.Model):
         app_label = 'assets'
 
     def __str__(self):
-        return f"{self.ticker_code} | {self.ticker_type} | {self.rendimento_type} | {self.money} | {self.date}"
+        return f"{self.ticker_code}"

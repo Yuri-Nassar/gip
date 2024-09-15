@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import (portfolio_view, asset_create, asset_list, asset_update, asset_delete, transaction_create, dividend_create, load_tickers, 
-                    load_dividends)
+from .views import (portfolio_view, asset_create, asset_list, asset_update, asset_delete, transaction_create, dividend_create,
+                    load_tickers, load_dividends)
 
 urlpatterns = [
     # path('', portfolio_view , name='portfolio'),
-    path('', portfolio_view , name='portfolio'),
+    path('', portfolio_view, name='portfolio'),
     path('tickers/', asset_list, name='ticker_list'),
     path('ticker_new/', asset_create, name='ticker_new'),
     path('ticker_update/<int:pk>/', asset_update, name='ticker_update'),

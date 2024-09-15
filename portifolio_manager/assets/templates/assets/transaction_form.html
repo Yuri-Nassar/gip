@@ -10,9 +10,16 @@
             <form method="post" class="form">
                 {% csrf_token %}
                 <div class="form-group row align-items-center">
-                    <label for="id_asset" class="col col-form-label">{{ form.asset.label }}</label>
+                    <label for="id_ticker_type" class="col col-form-label">{{ form.ticker_type.label }}</label>
+                    <div class="col">
+                        {{ form.ticker_type }}
+                    </div>
+                </div>
+                
+                <div class="form-group row align-items-center">
+                    <label for="id_ticker_code" class="col col-form-label">{{ form.ticker_code.label }}</label>
                     <div class="col">   
-                        {{ form.asset }}
+                        {{ form.ticker_code }}
                     </div>
                 </div>
 

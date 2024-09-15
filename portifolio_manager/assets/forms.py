@@ -14,7 +14,6 @@ class AssetForm(forms.ModelForm):
                                            'required': False}),
             'asset_type': forms.Select(attrs={'class': 'form-control'}),
         }
-        
 
         labels = {
             'name': 'Nome da Empresa',
@@ -26,10 +25,11 @@ class AssetForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['asset', 'action', 'quantity', 'price', 'date']
+        fields = ['ticker_type', 'ticker_code', 'action', 'quantity', 'price', 'date']
 
         widgets = {
-            'asset': forms.Select(attrs={'class': 'form-control'}),
+            'ticker_type': forms.Select(attrs={'class': 'form-control'}),
+            'ticker_code': forms.Select(attrs={'class': 'form-control', 'required': True}),
             'action': forms.Select(attrs={'class': 'form-control'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -37,7 +37,8 @@ class TransactionForm(forms.ModelForm):
         }
 
         labels = {
-            'asset': 'Código do Ticker',
+            'ticker_type': 'Tipo de Ativo',
+            'ticker_code': 'Código do Ticker',
             'action': 'Movimento',
             'quantity': 'Quantidade',
             'price': 'Valor R$',

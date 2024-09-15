@@ -13,7 +13,7 @@ $(document).ready(function() {
                 $tickerCodeSelect.empty();  // Clear the existing options
                 $tickerCodeSelect.append('<option value="">Selecione o Ticker</option>');  // Add a default option
                 $.each(data, function(index, item) {
-                    $tickerCodeSelect.append('<option value="' + item.id + '">' + item.ticker + '</option>');
+                    $tickerCodeSelect.append('<option value="' + item.ticker + '">' + item.ticker + '</option>');
                 });
             }
         });
