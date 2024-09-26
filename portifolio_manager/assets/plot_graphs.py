@@ -97,9 +97,8 @@ def plot_stack_bar(df:pd.DataFrame, x_column:str, y_column:str, color_column:str
         )
         )
     
-    # Configurando o gráfico para ser responsivo
     config = {'responsive': True}
 
-    # Convertendo o gráfico para HTML
-    graph_div = fig.to_html(full_html=False, config=config)
+    graph_div = fig.to_html(full_html=False, config=config, include_plotlyjs=False)
+    
     return graph_div
