@@ -86,10 +86,10 @@ def plot_stack_bar(df:pd.DataFrame, x_column:str, y_column:str, color_column:str
         title=title,
         xaxis_title=xaxis_title,
         yaxis_title=yaxis_title,
-        margin=dict(l=0, r=0, t=0, b=0), # Remove margens
+        margin=dict(l=0, r=0, t=0, b=0), # Remove margins
         legend_title=legend_title,
         legend=dict(
-            orientation="h",  # Orientação horizontal
+            orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="center",
