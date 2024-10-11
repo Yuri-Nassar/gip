@@ -51,6 +51,13 @@
                         {{ form.asset_type }}
                     </div>
                 </div>
+
+                <div class="form-group align-items-center">
+                    <label for="id_segment" class="col col-form-label">{{ form.segment.label }}</label>
+                    <div class="col">   
+                        {{ form.segment }}
+                    </div>
+                </div>
                 <div  style="margin-top: 5px;" class="form-group">
                     <button type="submit" class="btn btn-primary">Salvar</button>
                     <a href="{% url 'ticker_list' %}" class="btn btn-primary">Voltar</a>

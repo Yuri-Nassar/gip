@@ -4,7 +4,7 @@ from .models import Asset, Transaction, Dividend
 class AssetForm(forms.ModelForm):    
     class Meta:
         model = Asset
-        fields = ['name', 'ticker', 'cnpj', 'asset_type']
+        fields = ['name', 'ticker', 'cnpj', 'asset_type', 'segment']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -13,6 +13,7 @@ class AssetForm(forms.ModelForm):
                                            'placeholder': '00.000.000/0000-00',
                                            'required': False}),
             'asset_type': forms.Select(attrs={'class': 'form-control'}),
+            'segment': forms.TextInput(attrs={'class': 'form-control','required': False}),
         }
 
         labels = {
@@ -20,6 +21,7 @@ class AssetForm(forms.ModelForm):
             'ticker': 'Ticker do Ativo',
             'cnpj': 'CNPJ',
             'asset_type': 'Tipo de Ativo',
+            'segment': 'Segmento',
         }
 
 class TransactionForm(forms.ModelForm):

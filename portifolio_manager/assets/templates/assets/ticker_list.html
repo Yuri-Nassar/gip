@@ -14,6 +14,7 @@
                         <th>CNPJ</th>
                         <th>Ticker</th>
                         <th>Tipo de Ativo</th>
+                        <th>Segmento</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -29,6 +30,7 @@
                                     Fundo Imobiliário
                                 {% endif %}
                             </td>
+                            <td>{{ asset.segment }}</td>
                             <td>
                                 <a href="{% url 'ticker_update' asset.pk %}" class="btn btn-outline-primary">Editar</a>
                                 <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ asset.id }}">

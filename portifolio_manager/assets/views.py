@@ -1,3 +1,5 @@
+from django.db.models import F
+from django.db import connection
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import JsonResponse
 from django.utils import timezone
@@ -38,24 +40,28 @@ def is_ticker_name_valid(ticker, type_ticker):
     return True, "Válido"
 
 def portfolio_view(request):
-    # s_asset = Asset.objects.filter(asset_type='STOCK')
-    assets = Asset.objects.all()
-    tickers = {}
-    for ticker in assets:
-        tickers[ticker.ticker] = {'id': ticker.id, 'name': ticker.name, 'type': ticker.asset_type}
-
-    assets = AssetWallet.objects.all()
     stock_data, fiis_data = [], []
+
+    # join    
+    with connection.cursor() as cursor:
+        cursor.execute("""
+                       SELECT  b.asset_type, b.name, b.ticker, b.segment,
+                              a.total_quantity, a.average_price, a.money_invested
+                       FROM assets_assetwallet a
+                       INNER JOIN assets_asset b ON a.ticker_code = b.ticker
+                       """)
+        join_result = cursor.fetchall()
     
-    for asset in assets:
-        data = {'name': tickers[asset.ticker_code]['name'],
-                'ticker': asset.ticker_code,
-                'total_quantity': asset.total_quantity,
-                'average_price': asset.average_price,
-                'money_invested': asset.money_invested
+    for asset in join_result:
+        data = {'name': asset[1],
+                'ticker': asset[2],
+                'segment': asset[3],
+                'total_quantity': asset[4],
+                'average_price': asset[5],
+                'money_invested': asset[6]
                 }
 
-        if asset.asset_type == 'STOCK':
+        if asset[0] == 'STOCK':
             stock_data.append(data)
         else:
             fiis_data.append(data)
@@ -73,12 +79,17 @@ def asset_create(request):
         if form.is_valid():
             ticker = form.cleaned_data.get('ticker')
             asset_type = form.cleaned_data.get('asset_type')
+            segment = form.cleaned_data.get('segment').strip().capitalize()
 
             bool_check , msg = is_ticker_name_valid(ticker, asset_type)
             if not bool_check:
                 form.add_error('ticker', msg)
                 return render(request, 'assets/ticker_form.html', {'form': form})
             else:
+                if segment == '':
+                    form.instance.segment = "Indefinido"
+                else:
+                    form.instance.segment = segment
                 form.save()
                 # messages.add_message(request, messages.SUCCESS, 'Ativo criado com sucesso!')
                 print(f"Criando ativo -> ticker: {ticker}, asset_type: {asset_type}")
@@ -100,6 +111,11 @@ def asset_update(request, pk):
     if request.method == 'POST':
         form = AssetForm(request.POST, instance=asset)
         if form.is_valid():
+            segment = form.cleaned_data.get('segment').strip().capitalize()
+            if segment == '':
+                form.instance.segment = "Indefinido"
+            else:
+                form.instance.segment = segment
             
             form.save()
             # messages.success(request, 'Ativo atualizado com sucesso!')
@@ -134,13 +150,13 @@ def transaction_create(request):
         # obj = Asset.objects.get(id=_asset)
         obj = Asset.objects.get(ticker=_asset)
         print(f"obj: {obj}")
-        print(f"obj.asset_type: {obj.asset_type}, obj.ticker: {obj.ticker}")
+        print(f"obj.ticker: {obj.ticker}, obj.asset_type: {obj.asset_type}")
 
         form = TransactionForm(request.POST)
         if form.is_valid():
             # Update AssetWallet
             asset_wallet, created = AssetWallet.objects.get_or_create(
-                ticker_code=obj.ticker, asset_type=obj.asset_type
+                ticker_code=obj.ticker#, asset_type=obj.asset_type
             )
             
             # asset_wallet, created = AssetWallet.objects.get(asset=_asset)

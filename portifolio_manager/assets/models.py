@@ -6,10 +6,11 @@ TICKER_TYPE_CHOICES = (
 )
 
 class Asset(models.Model):
-    name = models.CharField(max_length=100)
-    ticker = models.CharField(max_length=6, unique=True)
-    cnpj   = models.CharField(max_length=18, blank=True)
-    asset_type = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
+    name        = models.CharField(max_length=100)
+    ticker      = models.CharField(max_length=6, unique=True)
+    cnpj        = models.CharField(max_length=18, blank=True)
+    asset_type  = models.CharField(max_length=5, choices=TICKER_TYPE_CHOICES)
+    segment     = models.CharField(max_length=50, blank=True)
 
     class Meta:
         app_label = 'assets'
@@ -22,7 +23,7 @@ class AssetWallet(models.Model):
     average_price  = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     money_invested = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_quantity = models.IntegerField(default=0)
-    asset_type = models.CharField(max_length=5)
+    # asset_type = models.CharField(max_length=5)
 
     class Meta:
         app_label = 'assets'
